@@ -2,11 +2,11 @@
 -export([compress/1]).
 
 compress(List) ->
-	compress(List, []).
+	p05:reverse(compress(List, [])).
 
-compress([], Acc) ->
-	p05:reverse(Acc);
 compress([Head, Head | Tail], Acc) ->
 	compress([Head | Tail], Acc);
 compress([Head | Tail], Acc) ->
-	compress(Tail, [Head | Acc]).
+	compress(Tail, [Head | Acc]);
+compress([], Acc) ->
+	Acc.

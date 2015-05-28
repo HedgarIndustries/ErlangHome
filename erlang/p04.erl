@@ -4,7 +4,7 @@
 len(List) ->
 	len(List, 0).
 
-len([], Counter) ->
-	Counter;
 len([_ | Tail], Counter) ->
-	len(Tail, Counter + 1).
+	len(Tail, Counter + 1);
+len([], Counter) ->
+	Counter.
