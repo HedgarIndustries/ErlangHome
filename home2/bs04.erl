@@ -43,26 +43,30 @@ disassemble(<<>>, Parts) ->
 	Parts.
 
 
+%% An escape symbol -> proceed
+determine(Type, <<$\\, Head, Rest/binary>>, Part) ->
+	determine(Type, Rest, <<Part/binary, Head>>);
+
 %% An ordinar symbol -> proceed
 determine(Type, <<Head, Rest/binary>>, Part) when Head /= $<, Head /= $> ->
 	determine(Type, Rest, <<Part/binary, Head>>);
 
 %% Closing tag detected -> set type atom to 'close'
-determine(undef, <<"</", Rest/binary>>, <<>>) ->
+determine(undef, <<$<, $/, Rest/binary>>, <<>>) ->
 	determine(close, Rest, <<>>);
 
 %% Opening tag detected -> set type atom to 'open'
-determine(undef, <<"<", Rest/binary>>, <<>>) ->
+determine(undef, <<$<, Rest/binary>>, <<>>) ->
 	determine(open, Rest, <<>>);
 
 %% End of value field -> return with type 'value'
-determine(undef, <<"<", _/binary>> = XML, Part) ->
+determine(undef, <<$<, _/binary>> = XML, Part) ->
 	{value, XML, Part};
 
 %% End of tag -> return
-determine(Type, <<">", Rest/binary>>, Part) ->
+determine(Type, <<$>, Rest/binary>>, Part) ->
 	{Type, Rest, Part};
 
 %% End of XML -> return
-determine(close, <<>>, Part) ->
-	{close, Part, <<>>}.
+determine(close, <<>>, _) ->
+	{close, <<>>, <<>>}.
